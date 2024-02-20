@@ -17,6 +17,8 @@ void queue_func(int clients, int tellers){
         std::cout << i << ' ';
     }
     std::cout << std::endl;
+}
+void teller_func(int clients, int tellers){
 
     for (int i = tellers; i << tellers >= 0; --i) {
         std::this_thread::sleep_for(2000ms);
@@ -34,6 +36,12 @@ int main(){
     for (int i = 0; i < 1; ++i) {
         std::thread queue(queue_func, 10, 9);
         queue.join();
+        
     }
+    for (int i = 0; i < 1; ++i) {
+        std::thread teller(teller_func, 9, 10);
+        teller.join();
+    }
+
     return 0;
 }
