@@ -5,3 +5,5 @@ main.exe
 Debug
 out
 x64
+.vscode
+build
