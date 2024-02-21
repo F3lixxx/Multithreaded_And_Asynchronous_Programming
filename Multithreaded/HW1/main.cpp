@@ -8,7 +8,7 @@ std::once_flag flag;
 std::once_flag flag2;
 
 
-void queue_func(int clients) {
+void queue_func(int &clients) {
     for (int i = 0; i <= clients; ++i) {
         std::this_thread::sleep_for(1000ms);
         std::call_once(flag, []() {
@@ -18,7 +18,7 @@ void queue_func(int clients) {
     }
     std::cout << std::endl;
 }
-void teller_func(int clients) {
+void teller_func(int &clients) {
 
     for (int i = clients; i >= 0; --i) {
         std::this_thread::sleep_for(2000ms);
