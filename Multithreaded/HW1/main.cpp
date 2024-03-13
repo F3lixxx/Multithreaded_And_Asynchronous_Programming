@@ -4,8 +4,6 @@
 #include <vector>
 
 using namespace std::chrono_literals;
-std::once_flag flag;
-std::once_flag flag2;
 
 
 void queue_func(int& clients) {
