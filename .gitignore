@@ -7,3 +7,7 @@ out
 x64
 .vscode
 build
+.vcxproj
+.vcxproj.filters
+.vcxproj.user
+.sln
