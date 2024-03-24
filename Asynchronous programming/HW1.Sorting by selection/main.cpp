@@ -1,37 +1,62 @@
 #include <iostream>
 #include <vector>
-#include <future>
-#include <vector>
 #include <random>
 #include <chrono>
-#include <thread>
+#include <future>
 
-void selectionSort(int arr[], int arr_size, std::promise<int> &prom) {
-    for (int i = 0; i < arr_size - 1; i++ ) {
-        int Indexmin = i;
-        for (int j = i + 1; j < arr_size; j++) {
-            if (arr[j] < arr[Indexmin]) {
-                Indexmin = j;
-            }
+using namespace std::chrono_literals;
+
+void findMin(int begin, std::vector<int>& v, std::promise<int> prom)
+{
+    int Imin = begin;
+    for (int j = begin; j < v.size(); ++j)
+    {
+        if (v.at(j) < v.at(Imin))
+        {
+            Imin = j;
         }
-        std::swap(arr[Indexmin], arr[i]);
     }
+    prom.set_value(Imin);
+}
 
-    for (int i = 0; i <= arr_size - 1; i++) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        std::cout << arr[i] << ' ' << std::flush;
+void choiceSort(std::vector<int>& v)
+{
+    int temp;
+    int Itemp;
+    for (int i = 0; i < v.size(); ++i)
+    {
+        std::promise<int> prom;
+        std::future<int> ftRest = prom.get_future();
+        std::future<void> ft = std::async(std::launch::async, findMin, i, std::ref(v), std::move(prom));
+        ft.wait();
+        Itemp = ftRest.get();
+        temp = v.at(Itemp);
+        v.at(Itemp) = v.at(i);
+        v.at(i) = temp;
     }
-    prom.set_value(arr_size);
+}
+
+void printVector(std::vector<int>& v)
+{
+    std::cout << "Vector: { ";
+    for (const auto& el : v)
+    {
+        std::cout << el << " ";
+    }
+    std::cout << "};" << std::endl;
 }
 
 
-int main() {
-    int arr[] = { 10, 8, 5, 6, 9, 15, 2 };
-    int arr_size = 7;
-	std::promise<int> prom;
-	std::future<int> futur = prom.get_future();
-    auto ft = std::async(std::launch::async, selectionSort,arr, arr_size, ref(prom));
-	futur.wait();
-	std::cout << "\nSize of sorted array: " << futur.get() << " elements." << std::flush;
-	return 0;
+int main()
+{
+    int N = 10;
+    std::vector<int> v;
+    for (int i = 0; i < N; ++i)
+    {
+        v.push_back(std::rand() % 100);
+    }
+    printVector(v);
+    choiceSort(v);
+    printVector(v);
 }
+
